@@ -1,11 +1,3 @@
-GRPC_GATEWAY_DIR := ~/Documents/repos/Bootcamp-GRPCGateway
-GO_INSTALLED := $(shell which go)
-PROTOC_INSTALLED := $(shell which protoc)
-PGGG_INSTALLED := $(shell which protoc-gen-grpc-gateway 2> /dev/null)
-PGG_INSTALLED := $(shell which protoc-gen-go 2> /dev/null)
-
-all: build
-
 generate:
 	buf generate;
 
@@ -15,3 +7,10 @@ run:
 update:
 	buf mod update;
 	go mod tidy;
+
+install:
+	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway;
+	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2;
+	go install google.golang.org/protobuf/cmd/protoc-gen-go;
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc;
+	go install github.com/envoyproxy/protoc-gen-validate;
