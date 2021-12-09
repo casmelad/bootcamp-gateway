@@ -13,7 +13,7 @@ plugins:
     opt:
       - paths=source_relative
   - name: openapiv2
-    out: server/swagger
+    out: server/swagger/
   - name: validate
     out: server
     opt:

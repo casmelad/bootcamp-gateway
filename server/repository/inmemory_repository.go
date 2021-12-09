@@ -66,7 +66,7 @@ func (repo *InMemoryUserRepository) GetAll(ctx context.Context) ([]users.User, e
 //Update -  updates the information of a user
 func (repo *InMemoryUserRepository) Update(ctx context.Context, u users.User) error {
 
-	userToUpdate, err := repo.GetByEmail(ctx, u.Email)
+	userToUpdate, err := repo.GetByID(ctx, u.ID)
 
 	if err != nil {
 		return err

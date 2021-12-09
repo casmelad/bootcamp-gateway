@@ -46,8 +46,6 @@ message CreateRequest{
 
 message UpdateRequest{
     User user = 1 [json_name = "user"] ;
-
-    google.protobuf.FieldMask update_mask = 2;
 }
 
 message GetAllUsersRequest{}
@@ -137,7 +135,7 @@ service Users{ //UsersService
     rpc Update(UpdateRequest) returns (UpdateResponse){
         option (google.api.http) = {
             // Route to this method from PATCH requests to /api/v1/users/{user.id}
-            patch: "/api/v1/users/{user.id}"
+            put: "/api/v1/users/{user.id}"
             body: "user"
           };
           option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {

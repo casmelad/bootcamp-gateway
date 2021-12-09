@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"fmt"
 
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -92,6 +93,7 @@ func (us *UserService) Update(ctx context.Context, usr User) error {
 	if errVal := v.Struct(usr); errVal != nil {
 		return ErrInvalidData
 	} */
+	fmt.Println(usr)
 
 	usrToUpdate, errU := us.repository.GetByID(ctx, usr.ID)
 

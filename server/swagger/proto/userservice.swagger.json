@@ -109,7 +109,7 @@
       }
     },
     "/api/v1/users/{user.id}": {
-      "patch": {
+      "put": {
         "summary": "Update a user",
         "description": "Change properties of a user.",
         "operationId": "Users_Update",
@@ -143,12 +143,6 @@
             "schema": {
               "$ref": "#/definitions/usersUser"
             }
-          },
-          {
-            "name": "updateMask",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
