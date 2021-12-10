@@ -23,7 +23,7 @@ func NewUserServer(s domain.Service) *UserServer {
 }
 
 //Get a user by the email
-func (s UserServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+func (s UserServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.User, error) {
 
 	fmt.Println(req)
 
@@ -37,7 +37,7 @@ func (s UserServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.Ge
 
 	mappedUser, err := mappers.ToGrpcUser(result)
 
-	return &pb.GetUserResponse{User: &mappedUser}, nil
+	return &mappedUser, nil
 }
 
 //Creates a nw user record
@@ -76,21 +76,22 @@ func (s UserServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.Crea
 }
 
 //Gets all users7
-func (s UserServer) GetAllUsers(ctx context.Context, req *pb.GetAllUsersRequest) (*pb.GetAllUsersResponse, error) {
-	result, err := s.appService.GetAll(ctx)
+func (s UserServer) GetAllUsers(_ *pb.GetAllUsersRequest, resp pb.Users_GetAllUsersServer) error {
+	result, err := s.appService.GetAll(context.TODO())
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Internal error")
+		return status.Errorf(codes.Internal, "Internal error")
 	}
-
-	response := pb.GetAllUsersResponse{Users: []*pb.User{}}
 
 	for _, u := range result {
 		usr, _ := mappers.ToGrpcUser(u)
-		response.Users = append(response.Users, &usr)
-	}
 
-	return &response, nil
+		err := resp.Send(&usr)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 //Updates the user information

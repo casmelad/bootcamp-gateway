@@ -117,21 +117,20 @@ func local_request_Users_Create_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func request_Users_GetAllUsers_0(ctx context.Context, marshaler runtime.Marshaler, client UsersClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Users_GetAllUsers_0(ctx context.Context, marshaler runtime.Marshaler, client UsersClient, req *http.Request, pathParams map[string]string) (Users_GetAllUsersClient, runtime.ServerMetadata, error) {
 	var protoReq GetAllUsersRequest
 	var metadata runtime.ServerMetadata
 
-	msg, err := client.GetAllUsers(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_Users_GetAllUsers_0(ctx context.Context, marshaler runtime.Marshaler, server UsersServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetAllUsersRequest
-	var metadata runtime.ServerMetadata
-
-	msg, err := server.GetAllUsers(ctx, &protoReq)
-	return msg, metadata, err
+	stream, err := client.GetAllUsers(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
 
 }
 
@@ -308,26 +307,10 @@ func RegisterUsersHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 	})
 
 	mux.Handle("GET", pattern_Users_GetAllUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/users.Users/GetAllUsers", runtime.WithHTTPPathPattern("/api/v1/users"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_Users_GetAllUsers_0(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_Users_GetAllUsers_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
 	})
 
 	mux.Handle("PUT", pattern_Users_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -473,7 +456,7 @@ func RegisterUsersHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 			return
 		}
 
-		forward_Users_GetAllUsers_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Users_GetAllUsers_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -537,7 +520,7 @@ var (
 
 	forward_Users_Create_0 = runtime.ForwardResponseMessage
 
-	forward_Users_GetAllUsers_0 = runtime.ForwardResponseMessage
+	forward_Users_GetAllUsers_0 = runtime.ForwardResponseStream
 
 	forward_Users_Update_0 = runtime.ForwardResponseMessage
 

@@ -26,9 +26,18 @@
         "operationId": "Users_GetAllUsers",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "A successful response.(streaming responses)",
             "schema": {
-              "$ref": "#/definitions/usersGetAllUsersResponse"
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/usersUser"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of usersUser"
             }
           },
           "default": {
@@ -111,7 +120,7 @@
     "/api/v1/users/{user.id}": {
       "put": {
         "summary": "Update a user",
-        "description": "Change properties of a user.",
+        "description": "Modifies the user information.",
         "operationId": "Users_Update",
         "responses": {
           "200": {
@@ -159,7 +168,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/usersGetUserResponse"
+              "$ref": "#/definitions/usersUser"
             }
           },
           "default": {
@@ -269,25 +278,6 @@
         "code": {
           "$ref": "#/definitions/usersCodeResult",
           "title": "The status code of the response"
-        }
-      }
-    },
-    "usersGetAllUsersResponse": {
-      "type": "object",
-      "properties": {
-        "users": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/usersUser"
-          }
-        }
-      }
-    },
-    "usersGetUserResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/usersUser"
         }
       }
     },

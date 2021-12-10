@@ -68,7 +68,7 @@ message CreateResponse{
 
 message UpdateResponse{   
     //The status code of the response
-    CodeResult code=1;
+    CodeResult code=1;    
 }
 
 message GetAllUsersResponse{
@@ -95,7 +95,7 @@ enum CodeResult {
 
 service Users{ //UsersService
     //Get a user by the email
-    rpc GetUser(GetUserRequest) returns (GetUserResponse){
+    rpc GetUser(GetUserRequest) returns (User){
         option (google.api.http) = {
             get:  "/api/v1/users/{email}"
         };
@@ -120,7 +120,7 @@ service Users{ //UsersService
     }
 
     //Gets all users
-    rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse){
+    rpc GetAllUsers(GetAllUsersRequest) returns (stream User){
         option (google.api.http) = {
             get:  "/api/v1/users"
         };
@@ -140,7 +140,7 @@ service Users{ //UsersService
           };
           option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             summary: "Update a user"
-            description: "Change properties of a user."
+            description: "Modifies the user information."
             tags: "Users"
           };
     }
